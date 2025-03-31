@@ -1,0 +1,65 @@
+import qrcode
+from PIL import Image
+import os
+
+def generate_qr_code(data, filename="qrcode.png", box_size=10, border=4, fill_color="black", back_color="white"):
+    """
+    Menghasilkan QR code dari data yang diberikan
+    
+    Parameters:
+    data (str): Teks atau URL yang akan dijadikan QR code
+    filename (str): Nama file output (termasuk ekstensi)
+    box_size (int): Ukuran setiap kotak dalam QR code
+    border (int): Ukuran border di sekitar QR code
+    fill_color (str): Warna untuk kotak QR (default: hitam)
+    back_color (str): Warna latar belakang (default: putih)
+    
+    Returns:
+    str: Path file QR code yang dihasilkan
+    """
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=box_size,
+        border=border,
+    )
+    
+    qr.add_data(data)
+    qr.make(fit=True)
+    
+    img = qr.make_image(fill_color=fill_color, back_color=back_color)
+    img.save(filename)
+    
+    # Menampilkan path lengkap file yang dihasilkan
+    full_path = os.path.abspath(filename)
+    print(f"QR code berhasil dibuat: {full_path}")
+    
+    return full_path
+
+if __name__ == "__main__":
+    # Contoh penggunaan dasar
+    print("Generator QR Code")
+    print("-" * 30)
+    
+    # Meminta input dari pengguna
+    data = input("Masukkan teks atau URL untuk QR code: ")
+    filename = input("Masukkan nama file output (default: qrcode.png): ") or "qrcode.png"
+    
+    # Opsi kustomisasi (opsional)
+    print("\nOpsi kustomisasi (tekan Enter untuk menggunakan nilai default)")
+    try:
+        box_size = int(input("Ukuran kotak (default: 10): ") or 10)
+        border = int(input("Ukuran border (default: 4): ") or 4)
+    except ValueError:
+        print("Input tidak valid, menggunakan nilai default")
+        box_size = 10
+        border = 4
+    
+    fill_color = input("Warna QR (default: black): ") or "black"
+    back_color = input("Warna latar belakang (default: white): ") or "white"
+    
+    # Generate QR code
+    file_path = generate_qr_code(data, filename, box_size, border, fill_color, back_color)
+    
+    print("\nSelesai! QR code telah dibuat.")
+    print(f"Anda dapat membuka file di: {file_path}")
